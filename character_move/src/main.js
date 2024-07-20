@@ -21,38 +21,63 @@ class MyGame extends Phaser.Scene {
 		// this.background1.setOrigin(0, 0);
 
 		// image
-		this.player = this.add.image(
-			config.width / 2,
-			config.height / 2,
-			"player",
-			0 // 0, 4, 8, 12
-		);
-
-		// sprite
-		// this.player = this.add.sprite(
+		// this.player = this.add.image(
 		// 	config.width / 2,
 		// 	config.height / 2,
-		// 	"player"
+		// 	"player",
+		// 	0 // 0, 4, 8, 12
 		// );
+
+		// sprite
+		this.player = this.add.sprite(
+			config.width / 2,
+			config.height / 2,
+			"player"
+		);
 
 		this.player.scale = 3;
 
-		// this.anims.create({
-		// 	key: "player_idle",
-		// 	frames: this.anims.generateFrameNumbers("player", {
-		// 		start: 0,
-		// 		end: 0,
-		// 	}),
-		// 	frameRate: 1,
-		// 	repeat: 0, // 무제한
-		// });
+		this.anims.create({
+			key: "player_idle",
+			frames: this.anims.generateFrameNumbers("player", {
+				start: 0,
+				end: 1,
+			}),
+			frameRate: 6,
+			repeat: -1, // 무제한
+		});
 
-		// this.player.play("player_idle");
+		this.player.play("player_idle");
 
-		this.physics.add.existing(this.player, true);
+		this.physics.add.existing(this.player, false);
+
+		this.keyboardInput = this.input.keyboard.createCursorKeys(); // key 정보 가지고 있음
+		this.player.moving = false;
 	}
 
-	update(time, delta) {}
+	update(time, delta) {
+		this.move(this.player);
+	}
+
+	move(player) {
+		const PLAYER_SPEED = 2;
+
+		const { left, right, up, down } = this.keyboardInput;
+
+		if (left.isDown) {
+			player.x -= PLAYER_SPEED;
+			player.flipX = false;
+		} else if (right.isDown) {
+			player.x += PLAYER_SPEED;
+			player.flipX = true;
+		}
+
+		if (up.isDown) {
+			player.y -= PLAYER_SPEED;
+		} else if (down.isDown) {
+			player.y += PLAYER_SPEED;
+		}
+	}
 }
 
 const config = {
@@ -65,7 +90,6 @@ const config = {
 		default: "arcade",
 		arcade: {
 			debug: true,
-			gravity: { y: 200 },
 		},
 	},
 	scene: MyGame,
