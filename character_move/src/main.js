@@ -14,6 +14,13 @@ class MyGame extends Phaser.Scene {
 			frameWidth: 48,
 			frameHeight: 48,
 		}); // debug 키고 사이즈 대충 확인해서 조절함 192 x 192 4 x 4 라 48이 맞음
+
+		this.DIRECTION = {
+			DOWN: 0,
+			UP: 4,
+			LEFT: 8,
+			RIGHT: 12,
+		};
 	}
 
 	create() {
@@ -37,17 +44,32 @@ class MyGame extends Phaser.Scene {
 
 		this.player.scale = 3;
 
-		this.anims.create({
-			key: "player_idle",
-			frames: this.anims.generateFrameNumbers("player", {
-				start: 0,
-				end: 1,
-			}),
-			frameRate: 6,
-			repeat: -1, // 무제한
-		});
+		this.player.direction = this.DIRECTION.DOWN;
 
-		this.player.play("player_idle");
+		for (const direction in this.DIRECTION) {
+			// console.log(this.DIRECTION[direction]);
+			this.anims.create({
+				key: `player_idle_${this.DIRECTION[direction]}`,
+				frames: this.anims.generateFrameNumbers("player", {
+					start: this.DIRECTION[direction],
+					end: this.DIRECTION[direction] + 1,
+				}),
+				frameRate: 3,
+				repeat: -1, // 무제한
+			});
+
+			this.anims.create({
+				key: `player_anim_${this.DIRECTION[direction]}`,
+				frames: this.anims.generateFrameNumbers("player", {
+					start: this.DIRECTION[direction] + 2,
+					end: this.DIRECTION[direction] + 3,
+				}),
+				frameRate: 3, // 1초에 x번
+				repeat: -1, // 무제한
+			});
+		}
+
+		this.player.play(`player_idle_${this.player.direction}`);
 
 		this.physics.add.existing(this.player, false);
 
@@ -63,19 +85,38 @@ class MyGame extends Phaser.Scene {
 		const PLAYER_SPEED = 2;
 
 		const { left, right, up, down } = this.keyboardInput;
+		let isDirectionChanged = false;
 
 		if (left.isDown) {
 			player.x -= PLAYER_SPEED;
-			player.flipX = false;
+			isDirectionChanged = player.direction == this.DIRECTION.LEFT;
+			player.direction = this.DIRECTION.LEFT;
 		} else if (right.isDown) {
 			player.x += PLAYER_SPEED;
-			player.flipX = true;
+			isDirectionChanged = player.direction == this.DIRECTION.RIGHT;
+			player.direction = this.DIRECTION.RIGHT;
 		}
 
 		if (up.isDown) {
 			player.y -= PLAYER_SPEED;
+			isDirectionChanged = player.direction == this.DIRECTION.UP;
+			player.direction = this.DIRECTION.UP;
 		} else if (down.isDown) {
 			player.y += PLAYER_SPEED;
+			isDirectionChanged = player.direction == this.DIRECTION.DOWN;
+			player.direction = this.DIRECTION.DOWN;
+		}
+
+		if (left.isDown || right.isDown || up.isDown || down.isDown) {
+			if (!player.moving || !isDirectionChanged) {
+				player.play(`player_anim_${player.direction}`);
+			}
+			player.moving = true;
+		} else {
+			if (player.moving || isDirectionChanged) {
+				player.play(`player_idle_${player.direction}`);
+			}
+			player.moving = false;
 		}
 	}
 }
