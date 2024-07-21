@@ -17,6 +17,8 @@ class MyGame extends Phaser.Scene {
 		const tiles = map.addTilesetImage("hills_tileset", "tiles");
 
 		const layer = map.createLayer(0, tiles, 0, 0);
+
+		layer.scale = 2;
 	}
 
 	update(time, delta) {}
