@@ -1,13 +1,23 @@
 import Phaser from "phaser";
+import tiles from "./assets/Hills.png";
 
 class MyGame extends Phaser.Scene {
 	constructor() {
 		super();
 	}
 
-	preload() {}
+	preload() {
+		this.load.image("tiles", tiles);
+		this.load.tilemapTiledJSON("map", "/assets/sample_map.tmj");
+	}
 
-	create() {}
+	create() {
+		const map = this.make.tilemap({ key: "map" });
+
+		const tiles = map.addTilesetImage("hills_tileset", "tiles");
+
+		const layer = map.createLayer(0, tiles, 0, 0);
+	}
 
 	update(time, delta) {}
 }
