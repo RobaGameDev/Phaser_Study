@@ -29,7 +29,7 @@ class MyGame extends Phaser.Scene {
 		// 충돌 처리
 		layer.setCollisionByProperty({ collides: true });
 
-		// 충동 draw 처리
+		// 충돌 draw 처리
 		// Visualize the colliding tiles
 		this.debugGraphics = this.add.graphics();
 		this.drawDebug();
@@ -40,9 +40,39 @@ class MyGame extends Phaser.Scene {
 				this.drawDebug();
 			}
 		});
+
+		// ball
+		this.ball = this.physics.add.image(
+			config.width / 2,
+			config.height / 2,
+			"balls"
+		);
+
+		// this.ball.setCollideWorldBounds(true);
+
+		this.cursors = this.input.keyboard.createCursorKeys();
+
+		// 충돌 처리
+		this.physics.add.existing(this.ball);
+		this.physics.add.collider(this.ball, layer);
 	}
 
-	update(time, delta) {}
+	update(time, delta) {
+		this.ball.setVelocity(0);
+		const SPEED = 150;
+
+		if (this.cursors.left.isDown) {
+			this.ball.setVelocityX(-SPEED);
+		} else if (this.cursors.right.isDown) {
+			this.ball.setVelocityX(SPEED);
+		}
+
+		if (this.cursors.up.isDown) {
+			this.ball.setVelocityY(-SPEED);
+		} else if (this.cursors.down.isDown) {
+			this.ball.setVelocityY(SPEED);
+		}
+	}
 
 	drawDebug() {
 		this.debugGraphics.clear();
