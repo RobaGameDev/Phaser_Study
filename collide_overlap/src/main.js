@@ -44,6 +44,9 @@ class MyGame extends Phaser.Scene {
 		this.physics.add.existing(this.ball);
 		this.physics.add.existing(this.ball2);
 		this.physics.add.existing(this.ball3);
+
+		// WorldBounds 처리
+		this.ball.setBounce(1, 1).setCollideWorldBounds(true);
 	}
 
 	update(time, delta) {
@@ -81,7 +84,7 @@ const config = {
 	width: 1024,
 	height: 768,
 	parent: "game-container",
-	backgroundColor: 0x000000,
+	backgroundColor: 0xffffff,
 	physics: {
 		default: "arcade",
 		arcade: {

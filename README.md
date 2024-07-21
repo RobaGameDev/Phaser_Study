@@ -41,3 +41,36 @@ path 간 처리 가능
 impact.js 라이브러리에서 파생된 2D 물리 엔진으로, HTML5 기반 게임에 최적화
 
 ## Collision
+
+### bounce
+
+-   setBounce : 얼마나 팅길지 설정
+
+### setCollideWorldBounds
+
+게임 화면 밖으로 나가지 않게 설정
+
+### collide, overlap
+
+```js
+const create = () => {
+	// physics 처리를 해줘야함
+
+	this.physics.add.existing(this.ball);
+	this.physics.add.existing(this.ball2);
+	this.physics.add.existing(this.ball3);
+};
+
+const update = () => {
+	// update에서 collide or overlap 처리
+
+	// collide
+	this.physics.collide(this.ball, this.ball2);
+
+	// overlap
+	this.physics.overlap(this.ball, this.ball3, (ball, ball3) => {
+		// parameter로 받아서 이벤트 처리 해줄 수 있음
+		ball3.destroy();
+	});
+};
+```
